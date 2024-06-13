@@ -133,16 +133,6 @@ func (c Metrics) Collect(ch chan<- prometheus.Metric) {
 		float64(status.StatStorage.GetAndroidError()),
 	)
 	ch <- prometheus.MustNewConstMetric(
-		c.HuaweiSuccess,
-		prometheus.CounterValue,
-		float64(status.StatStorage.GetHuaweiSuccess()),
-	)
-	ch <- prometheus.MustNewConstMetric(
-		c.HuaweiError,
-		prometheus.CounterValue,
-		float64(status.StatStorage.GetHuaweiError()),
-	)
-	ch <- prometheus.MustNewConstMetric(
 		c.BusyWorkers,
 		prometheus.GaugeValue,
 		float64(c.q.BusyWorkers()),

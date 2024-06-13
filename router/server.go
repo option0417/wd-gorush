@@ -130,8 +130,6 @@ func appStatusHandler(q *queue.Queue) gin.HandlerFunc {
 		result.Ios.PushError = status.StatStorage.GetIosError()
 		result.Android.PushSuccess = status.StatStorage.GetAndroidSuccess()
 		result.Android.PushError = status.StatStorage.GetAndroidError()
-		result.Huawei.PushSuccess = status.StatStorage.GetHuaweiSuccess()
-		result.Huawei.PushError = status.StatStorage.GetHuaweiError()
 
 		c.JSON(http.StatusOK, result)
 	}
@@ -270,10 +268,6 @@ func handleNotification(
 			}
 		case core.PlatFormAndroid:
 			if !cfg.Android.Enabled {
-				continue
-			}
-		case core.PlatFormHuawei:
-			if !cfg.Huawei.Enabled {
 				continue
 			}
 		}

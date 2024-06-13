@@ -54,10 +54,6 @@ func main() {
 	flag.StringVar(&opts.Ios.Password, "P", "", "iOS certificate password for gorush")
 	flag.StringVar(&opts.Ios.Password, "password", "", "iOS certificate password for gorush")
 	flag.StringVar(&opts.Android.KeyPath, "fcm-key", "", "FCM key path configuration for gorush")
-	flag.StringVar(&opts.Huawei.AppSecret, "hk", "", "Huawei api key configuration for gorush")
-	flag.StringVar(&opts.Huawei.AppSecret, "hmskey", "", "Huawei api key configuration for gorush")
-	flag.StringVar(&opts.Huawei.AppID, "hid", "", "HMS app id configuration for gorush")
-	flag.StringVar(&opts.Huawei.AppID, "hmsid", "", "HMS app id configuration for gorush")
 	flag.StringVar(&opts.Core.Address, "A", "", "address to bind")
 	flag.StringVar(&opts.Core.Address, "address", "", "address to bind")
 	flag.StringVar(&opts.Core.Port, "p", "", "port number for gorush")
@@ -71,7 +67,6 @@ func main() {
 	flag.StringVar(&message, "message", "", "notification message")
 	flag.StringVar(&title, "title", "", "notification title")
 	flag.BoolVar(&opts.Android.Enabled, "android", false, "send android notification")
-	flag.BoolVar(&opts.Huawei.Enabled, "huawei", false, "send huawei notification")
 	flag.BoolVar(&opts.Ios.Enabled, "ios", false, "send ios notification")
 	flag.BoolVar(&opts.Ios.Production, "production", false, "production mode in iOS")
 	flag.StringVar(&topic, "topic", "", "apns topic in iOS")
@@ -119,14 +114,6 @@ func main() {
 
 	if opts.Android.KeyPath != "" {
 		cfg.Android.KeyPath = opts.Android.KeyPath
-	}
-
-	if opts.Huawei.AppSecret != "" {
-		cfg.Huawei.AppSecret = opts.Huawei.AppSecret
-	}
-
-	if opts.Huawei.AppID != "" {
-		cfg.Huawei.AppID = opts.Huawei.AppID
 	}
 
 	if opts.Stat.Engine != "" {
@@ -196,41 +183,6 @@ func main() {
 		}
 
 		if _, err := notify.PushToAndroid(req, cfg); err != nil {
-			return
-		}
-
-		return
-	}
-
-	// send huawei notification
-	if opts.Huawei.Enabled {
-		cfg.Huawei.Enabled = opts.Huawei.Enabled
-		req := &notify.PushNotification{
-			Platform: core.PlatFormHuawei,
-			Message:  message,
-			Title:    title,
-		}
-
-		// send message to single device
-		if token != "" {
-			req.Tokens = []string{token}
-		}
-
-		// send topic message
-		if topic != "" {
-			req.To = topic
-		}
-
-		err := notify.CheckMessage(req)
-		if err != nil {
-			logx.LogError.Fatal(err)
-		}
-
-		if err := status.InitAppStatus(cfg); err != nil {
-			return
-		}
-
-		if _, err := notify.PushToHuawei(req, cfg); err != nil {
 			return
 		}
 
@@ -370,12 +322,6 @@ func main() {
 		}
 	}
 
-	if cfg.Huawei.Enabled {
-		if _, err = notify.InitHMSClient(cfg, cfg.Huawei.AppSecret, cfg.Huawei.AppID); err != nil {
-			logx.LogError.Fatal(err)
-		}
-	}
-
 	g.AddRunningJob(func(ctx context.Context) error {
 		return router.RunHTTPServer(ctx, cfg, q)
 	})
@@ -423,12 +369,8 @@ iOS Options:
 Android Options:
     --fcm-key <fcm_key_path>         FCM Credentials Key Path
     --android                        enabled android (default: false)
-Huawei Options:
-    -hk, --hmskey <hms_key>          HMS App Secret
-    -hid, --hmsid <hms_id>           HMS App ID
-    --huawei                         enabled huawei (default: false)
 Common Options:
-    --topic <topic>                  iOS, Android or Huawei topic message
+    --topic <topic>                  iOS or Android topic message
     -h, --help                       Show this message
     -V, --version                    Show version
 `

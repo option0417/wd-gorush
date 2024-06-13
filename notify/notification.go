@@ -12,7 +12,6 @@ import (
 	"github.com/appleboy/gorush/logx"
 
 	"firebase.google.com/go/v4/messaging"
-	"github.com/appleboy/go-hms-push/push/model"
 	qcore "github.com/golang-queue/queue/core"
 	jsoniter "github.com/json-iterator/go"
 )
@@ -88,16 +87,6 @@ type PushNotification struct {
 	FCMOptions   *messaging.FCMOptions    `json:"fcm_options,omitempty"`
 	Condition    string                   `json:"condition,omitempty"`
 
-	// Huawei
-	AppID              string                     `json:"app_id,omitempty"`
-	AppSecret          string                     `json:"app_secret,omitempty"`
-	HuaweiNotification *model.AndroidNotification `json:"huawei_notification,omitempty"`
-	HuaweiData         string                     `json:"huawei_data,omitempty"`
-	HuaweiCollapseKey  int                        `json:"huawei_collapse_key,omitempty"`
-	HuaweiTTL          string                     `json:"huawei_ttl,omitempty"`
-	BiTag              string                     `json:"bi_tag,omitempty"`
-	FastAppTarget      int                        `json:"fast_app_target,omitempty"`
-
 	// iOS
 	Expiration  *int64   `json:"expiration,omitempty"`
 	ApnsID      string   `json:"apns_id,omitempty"`
@@ -129,7 +118,7 @@ func (p *PushNotification) Bytes() []byte {
 // IsTopic check if message format is topic for FCM
 // ref: https://firebase.google.com/docs/cloud-messaging/send-message#topic-http-post-request
 func (p *PushNotification) IsTopic() bool {
-	if p.Platform == core.PlatFormHuawei || p.Platform == core.PlatFormAndroid {
+	if p.Platform == core.PlatFormAndroid {
 		return p.Topic != "" || p.Condition != ""
 	}
 
@@ -157,8 +146,7 @@ func CheckMessage(req *PushNotification) error {
 			return errors.New(msg)
 		}
 	case
-		core.PlatFormAndroid,
-		core.PlatFormHuawei:
+		core.PlatFormAndroid:
 		if len(req.Tokens) > 500 {
 			msg = "tokens must not contain more than 500 elements"
 			logx.LogAccess.Debug(msg)
@@ -185,8 +173,8 @@ func SetProxy(proxy string) error {
 
 // CheckPushConf provide check your yml config.
 func CheckPushConf(cfg *config.ConfYaml) error {
-	if !cfg.Ios.Enabled && !cfg.Android.Enabled && !cfg.Huawei.Enabled {
-		return errors.New("please enable iOS, Android or Huawei config in yml config")
+	if !cfg.Ios.Enabled && !cfg.Android.Enabled {
+		return errors.New("please enable iOS or Android config in yml config")
 	}
 
 	if cfg.Ios.Enabled {
@@ -211,16 +199,6 @@ func CheckPushConf(cfg *config.ConfYaml) error {
 		}
 	}
 
-	if cfg.Huawei.Enabled {
-		if cfg.Huawei.AppSecret == "" {
-			return errors.New("missing huawei app secret")
-		}
-
-		if cfg.Huawei.AppID == "" {
-			return errors.New("missing huawei app id")
-		}
-	}
-
 	return nil
 }
 
@@ -242,8 +220,6 @@ func SendNotification(
 		resp, err = PushToIOS(v, cfg)
 	case core.PlatFormAndroid:
 		resp, err = PushToAndroid(v, cfg)
-	case core.PlatFormHuawei:
-		resp, err = PushToHuawei(v, cfg)
 	}
 
 	if cfg.Core.FeedbackURL != "" {

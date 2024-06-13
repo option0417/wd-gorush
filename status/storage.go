@@ -92,13 +92,3 @@ func (s *StateStorage) GetAndroidSuccess() int64 {
 func (s *StateStorage) GetAndroidError() int64 {
 	return s.store.Get(core.AndroidErrorKey)
 }
-
-// GetHuaweiSuccess show success counts of Huawei notification.
-func (s *StateStorage) GetHuaweiSuccess() int64 {
-	return s.store.Get(core.HuaweiSuccessKey)
-}
-
-// GetHuaweiError show error counts of Huawei notification.
-func (s *StateStorage) GetHuaweiError() int64 {
-	return s.store.Get(core.HuaweiErrorKey)
-}

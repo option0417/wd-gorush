@@ -37,12 +37,11 @@ var (
 func TestDisabledAndroidIosConf(t *testing.T) {
 	cfg, _ := config.LoadConf()
 	cfg.Android.Enabled = false
-	cfg.Huawei.Enabled = false
 
 	err := CheckPushConf(cfg)
 
 	assert.Error(t, err)
-	assert.Equal(t, "please enable iOS, Android or Huawei config in yml config", err.Error())
+	assert.Equal(t, "please enable iOS or Android config in yml config", err.Error())
 }
 
 func TestMissingIOSCertificate(t *testing.T) {

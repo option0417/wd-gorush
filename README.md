@@ -26,7 +26,6 @@ A push notification micro server using [Gin](https://github.com/gin-gonic/gin) f
       - [Fetch from GitHub](#fetch-from-github)
     - [Command Usage](#command-usage)
     - [Send Android notification](#send-android-notification)
-    - [Send Huawei (HMS) notification](#send-huawei-hms-notification)
     - [Send iOS notification](#send-ios-notification)
     - [Send Android or iOS notifications using Firebase](#send-android-or-ios-notifications-using-firebase)
   - [Run gorush web server](#run-gorush-web-server)
@@ -40,10 +39,8 @@ A push notification micro server using [Gin](https://github.com/gin-gonic/gin) f
     - [iOS alert payload](#ios-alert-payload)
     - [iOS sound payload](#ios-sound-payload)
     - [Android notification payload](#android-notification-payload)
-    - [Huawei notification](#huawei-notification)
     - [iOS Example](#ios-example)
     - [Android Example](#android-example)
-    - [Huawei Example](#huawei-example)
     - [Response body](#response-body)
   - [Run gRPC service](#run-grpc-service)
   - [Run gorush in Docker](#run-gorush-in-docker)
@@ -63,7 +60,6 @@ A push notification micro server using [Gin](https://github.com/gin-gonic/gin) f
 
 - [APNS](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/APNSOverview.html)
 - [FCM](https://firebase.google.com/)
-- [HMS](https://developer.huawei.com/consumer/en/hms/)
 
 [A live demo on Netlify](https://gorush.netlify.app/).
 
@@ -71,7 +67,6 @@ A push notification micro server using [Gin](https://github.com/gin-gonic/gin) f
 
 - Support [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging) using [go-fcm](https://github.com/appleboy/go-fcm) library for Android.
 - Support [HTTP/2](https://http2.github.io/) Apple Push Notification Service using [apns2](https://github.com/sideshow/apns2) library.
-- Support [HMS Push Service](https://developer.huawei.com/consumer/en/hms/huawei-pushkit) using [go-hms-push](https://github.com/msalihkarakasli/go-hms-push) library for Huawei Devices.
 - Support [YAML](https://github.com/go-yaml/yaml) configuration.
 - Support command line to send single Android or iOS notification.
 - Support Web API to send push notification.
@@ -142,12 +137,6 @@ android:
   enabled: true
   key_path: "" # path to fcm key file
   credential: "" # fcm credential data
-  max_retry: 0 # resend fail notification, default value zero is disabled
-
-huawei:
-  enabled: false
-  appsecret: "YOUR_APP_SECRET"
-  appid: "YOUR_APP_ID"
   max_retry: 0 # resend fail notification, default value zero is disabled
 
 queue:
@@ -319,12 +308,8 @@ iOS Options:
 Android Options:
     --fcm-key <fcm_key_path>         FCM Key Path
     --android                        enabled android (default: false)
-Huawei Options:
-    -hk, --hmskey <hms_key>          HMS App Secret
-    -hid, --hmsid <hms_id>           HMS App ID
-    --huawei                         enabled huawei (default: false)
 Common Options:
-    --topic <topic>                  iOS, Android or Huawei topic message
+    --topic <topic>                  iOS or Android topic message
     -h, --help                       Show this message
     -V, --version                    Show version
 ```
@@ -359,31 +344,6 @@ gorush --android --topic "/topics/foo-bar" \
 
 - `-m`: Notification message.
 - `--fcm-key`: [Firebase Cloud Messaging Provide credentials manually](https://firebase.google.com/docs/cloud-messaging/auth-server#provide-credentials-manually)
-- `-t`: Device token.
-- `--title`: Notification title.
-- `--topic`: Send messages to topics. note: don't add device token.
-- `--proxy`: Set `http`, `https` or `socks5` proxy url.
-
-### Send Huawei (HMS) notification
-
-Send single notification with the following command.
-
-```bash
-gorush -huawei -title "Gorush with HMS" -m "your message" -hk "API Key" -hid "App ID" -t "Device token"
-```
-
-Send messages to topics.
-
-```bash
-gorush --huawei --topic "foo-bar" \
-  -title "Gorush with HMS" \
-  -m "This is a Huawei Mobile Services Topic Message" \
-  -hk "API Key" \
-  -hid "App ID"
-```
-
-- `-m`: Notification message.
-- `-hk`: [Huawei Mobile Services](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/Preparations) api secret key
 - `-t`: Device token.
 - `--title`: Notification title.
 - `--topic`: Send messages to topics. note: don't add device token.
@@ -448,7 +408,7 @@ Gorush support the following API.
 - **GET**  `/api/stat/go` Golang cpu, memory, gc, etc information. Thanks for [golang-stats-api-handler](https://github.com/fukata/golang-stats-api-handler).
 - **GET**  `/api/stat/app` show notification success and failure counts.
 - **GET**  `/api/config` show server yml config file.
-- **POST** `/api/push` push ios, android or huawei notifications.
+- **POST** `/api/push` push ios or android notifications.
 
 ### GET /api/stat/go
 
@@ -508,10 +468,6 @@ Show success or failure counts information of notification.
   "android": {
     "push_success": 10,
     "push_error": 10
-  },
-  "huawei": {
-    "push_success": 3,
-    "push_error": 1
   }
 }
 ```
@@ -576,21 +532,6 @@ Simple send Android notification example, the `platform` value is `2`:
 }
 ```
 
-Simple send Huawei notification example, the `platform` value is `3`:
-
-```json
-{
-  "notifications": [
-    {
-      "tokens": ["token_a", "token_b"],
-      "platform": 3,
-      "title": "Gorush with HMS",
-      "message": "Hello World Huawei!"
-    }
-  ]
-}
-```
-
 Simple send notification on Android and iOS devices using Firebase, the `platform` value is `2`:
 
 ```json
@@ -620,18 +561,12 @@ Send multiple notifications as below:
       "platform": 2,
       "message": "Hello World Android!"
     },
-    {
-      "tokens": ["token_a", "token_b"],
-      "platform": 3,
-      "message": "Hello World Huawei!",
-      "title": "Gorush with HMS"
-    },
     .....
   ]
 }
 ```
 
-See more example about [iOS](#ios-example), [Android](#android-example) or [Huawei](#huawei-example)
+See more example about [iOS](#ios-example) or [Android](#android-example)
 
 ### Request body
 
@@ -641,7 +576,7 @@ The Request body must have a notifications array. The following is a parameter t
 |-------------------------|--------------|---------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------|
 | notif_id                | string       | A unique string that identifies the notification for async feedback                               | -        |                                                               |
 | tokens                  | string array | device tokens                                                                                     | o        |                                                               |
-| platform                | int          | platform(iOS,Android)                                                                             | o        | 1=iOS, 2=Android (Firebase), 3=Huawei (HMS)                   |
+| platform                | int          | platform(iOS,Android)                                                                             | o        | 1=iOS, 2=Android (Firebase)                   |
 | message                 | string       | message for notification                                                                          | -        |                                                               |
 | title                   | string       | notification title                                                                                | -        |                                                               |
 | priority                | string       | Sets the priority of the message.                                                                 | -        | `normal` or `high`                                            |

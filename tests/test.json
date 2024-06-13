@@ -11,12 +11,6 @@
       "platform": 2,
       "message": "Hello World Android!",
       "title": "Gorush with Android"
-    },
-    {
-      "tokens": ["token_a", "token_b"],
-      "platform": 3,
-      "message": "Hello World Huawei!",
-      "title": "Gorush with HMS"
     }
   ]
 }

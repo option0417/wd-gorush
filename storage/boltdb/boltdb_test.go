@@ -19,15 +19,15 @@ func TestBoltDBEngine(t *testing.T) {
 	err := boltDB.Init()
 	assert.Nil(t, err)
 
-	boltDB.Add(core.HuaweiSuccessKey, 10)
-	val = boltDB.Get(core.HuaweiSuccessKey)
+	boltDB.Add(core.AndroidSuccessKey, 10)
+	val = boltDB.Get(core.AndroidSuccessKey)
 	assert.Equal(t, int64(10), val)
-	boltDB.Add(core.HuaweiSuccessKey, 10)
-	val = boltDB.Get(core.HuaweiSuccessKey)
+	boltDB.Add(core.AndroidSuccessKey, 10)
+	val = boltDB.Get(core.AndroidSuccessKey)
 	assert.Equal(t, int64(20), val)
 
-	boltDB.Set(core.HuaweiSuccessKey, 0)
-	val = boltDB.Get(core.HuaweiSuccessKey)
+	boltDB.Set(core.AndroidSuccessKey, 0)
+	val = boltDB.Get(core.AndroidSuccessKey)
 	assert.Equal(t, int64(0), val)
 
 	// test concurrency issues
@@ -35,12 +35,12 @@ func TestBoltDBEngine(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
 		go func() {
-			boltDB.Add(core.HuaweiSuccessKey, 1)
+			boltDB.Add(core.AndroidSuccessKey, 1)
 			wg.Done()
 		}()
 	}
 	wg.Wait()
-	val = boltDB.Get(core.HuaweiSuccessKey)
+	val = boltDB.Get(core.AndroidSuccessKey)
 	assert.Equal(t, int64(10), val)
 
 	assert.NoError(t, boltDB.Close())

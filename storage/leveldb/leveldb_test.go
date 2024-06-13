@@ -25,15 +25,15 @@ func TestLevelDBEngine(t *testing.T) {
 	err := levelDB.Init()
 	assert.Nil(t, err)
 
-	levelDB.Add(core.HuaweiSuccessKey, 10)
-	val = levelDB.Get(core.HuaweiSuccessKey)
+	levelDB.Add(core.AndroidSuccessKey, 10)
+	val = levelDB.Get(core.AndroidSuccessKey)
 	assert.Equal(t, int64(10), val)
-	levelDB.Add(core.HuaweiSuccessKey, 10)
-	val = levelDB.Get(core.HuaweiSuccessKey)
+	levelDB.Add(core.AndroidSuccessKey, 10)
+	val = levelDB.Get(core.AndroidSuccessKey)
 	assert.Equal(t, int64(20), val)
 
-	levelDB.Set(core.HuaweiSuccessKey, 0)
-	val = levelDB.Get(core.HuaweiSuccessKey)
+	levelDB.Set(core.AndroidSuccessKey, 0)
+	val = levelDB.Get(core.AndroidSuccessKey)
 	assert.Equal(t, int64(0), val)
 
 	// test concurrency issues
@@ -41,12 +41,12 @@ func TestLevelDBEngine(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
 		go func() {
-			levelDB.Add(core.HuaweiSuccessKey, 1)
+			levelDB.Add(core.AndroidSuccessKey, 1)
 			wg.Done()
 		}()
 	}
 	wg.Wait()
-	val = levelDB.Get(core.HuaweiSuccessKey)
+	val = levelDB.Get(core.AndroidSuccessKey)
 	assert.Equal(t, int64(10), val)
 
 	assert.NoError(t, levelDB.Close())

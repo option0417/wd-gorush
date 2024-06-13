@@ -30,15 +30,15 @@ func TestRedisEngine(t *testing.T) {
 	err := redis.Init()
 	assert.Nil(t, err)
 
-	redis.Add(core.HuaweiSuccessKey, 10)
-	val = redis.Get(core.HuaweiSuccessKey)
+	redis.Add(core.AndroidSuccessKey, 10)
+	val = redis.Get(core.AndroidSuccessKey)
 	assert.Equal(t, int64(10), val)
-	redis.Add(core.HuaweiSuccessKey, 10)
-	val = redis.Get(core.HuaweiSuccessKey)
+	redis.Add(core.AndroidSuccessKey, 10)
+	val = redis.Get(core.AndroidSuccessKey)
 	assert.Equal(t, int64(20), val)
 
-	redis.Set(core.HuaweiSuccessKey, 0)
-	val = redis.Get(core.HuaweiSuccessKey)
+	redis.Set(core.AndroidSuccessKey, 0)
+	val = redis.Get(core.AndroidSuccessKey)
 	assert.Equal(t, int64(0), val)
 
 	// test concurrency issues
@@ -46,12 +46,12 @@ func TestRedisEngine(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
 		go func() {
-			redis.Add(core.HuaweiSuccessKey, 1)
+			redis.Add(core.AndroidSuccessKey, 1)
 			wg.Done()
 		}()
 	}
 	wg.Wait()
-	val = redis.Get(core.HuaweiSuccessKey)
+	val = redis.Get(core.AndroidSuccessKey)
 	assert.Equal(t, int64(10), val)
 
 	assert.NoError(t, redis.Close())

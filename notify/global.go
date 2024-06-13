@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/appleboy/go-fcm"
-	"github.com/appleboy/go-hms-push/push/core"
 	"github.com/sideshow/apns2"
 )
 
@@ -15,8 +14,6 @@ var (
 	ApnsClient *apns2.Client
 	// FCMClient is apns client
 	FCMClient *fcm.Client
-	// HMSClient is Huawei push client
-	HMSClient *core.HMSClient
 	// MaxConcurrentIOSPushes pool to limit the number of concurrent iOS pushes
 	MaxConcurrentIOSPushes chan struct{}
 

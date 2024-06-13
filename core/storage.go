@@ -16,12 +16,6 @@ const (
 
 	// AndroidErrorKey is key name for android error count of storage
 	AndroidErrorKey = "gorush-android-error-count"
-
-	// HuaweiSuccessKey is key name for huawei success count of storage
-	HuaweiSuccessKey = "gorush-huawei-success-count"
-
-	// HuaweiErrorKey is key name for huawei error count of storage
-	HuaweiErrorKey = "gorush-huawei-error-count"
 )
 
 // Storage interface

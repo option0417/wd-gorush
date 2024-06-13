@@ -17,8 +17,6 @@ type Metrics struct {
 	IosError       *prometheus.Desc
 	AndroidSuccess *prometheus.Desc
 	AndroidError   *prometheus.Desc
-	HuaweiSuccess  *prometheus.Desc
-	HuaweiError    *prometheus.Desc
 	BusyWorkers    *prometheus.Desc
 	SuccessTasks   *prometheus.Desc
 	FailureTasks   *prometheus.Desc
@@ -54,16 +52,6 @@ func NewMetrics(q *queue.Queue) Metrics {
 			"Number of android fail count",
 			nil, nil,
 		),
-		HuaweiSuccess: prometheus.NewDesc(
-			namespace+"huawei_success",
-			"Number of huawei success count",
-			nil, nil,
-		),
-		HuaweiError: prometheus.NewDesc(
-			namespace+"huawei_fail",
-			"Number of huawei fail count",
-			nil, nil,
-		),
 		BusyWorkers: prometheus.NewDesc(
 			namespace+"busy_workers",
 			"Length of busy workers",
@@ -97,8 +85,6 @@ func (c Metrics) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.IosError
 	ch <- c.AndroidSuccess
 	ch <- c.AndroidError
-	ch <- c.HuaweiSuccess
-	ch <- c.HuaweiError
 	ch <- c.BusyWorkers
 	ch <- c.SuccessTasks
 	ch <- c.FailureTasks

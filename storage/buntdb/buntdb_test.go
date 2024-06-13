@@ -25,15 +25,15 @@ func TestBuntDBEngine(t *testing.T) {
 	err := buntDB.Init()
 	assert.Nil(t, err)
 
-	buntDB.Add(core.HuaweiSuccessKey, 10)
-	val = buntDB.Get(core.HuaweiSuccessKey)
+	buntDB.Add(core.AndroidSuccessKey, 10)
+	val = buntDB.Get(core.AndroidSuccessKey)
 	assert.Equal(t, int64(10), val)
-	buntDB.Add(core.HuaweiSuccessKey, 10)
-	val = buntDB.Get(core.HuaweiSuccessKey)
+	buntDB.Add(core.AndroidSuccessKey, 10)
+	val = buntDB.Get(core.AndroidSuccessKey)
 	assert.Equal(t, int64(20), val)
 
-	buntDB.Set(core.HuaweiSuccessKey, 0)
-	val = buntDB.Get(core.HuaweiSuccessKey)
+	buntDB.Set(core.AndroidSuccessKey, 0)
+	val = buntDB.Get(core.AndroidSuccessKey)
 	assert.Equal(t, int64(0), val)
 
 	// test concurrency issues
@@ -41,12 +41,12 @@ func TestBuntDBEngine(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
 		go func() {
-			buntDB.Add(core.HuaweiSuccessKey, 1)
+			buntDB.Add(core.AndroidSuccessKey, 1)
 			wg.Done()
 		}()
 	}
 	wg.Wait()
-	val = buntDB.Get(core.HuaweiSuccessKey)
+	val = buntDB.Get(core.AndroidSuccessKey)
 	assert.Equal(t, int64(10), val)
 
 	assert.NoError(t, buntDB.Close())

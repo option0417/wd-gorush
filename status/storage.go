@@ -29,8 +29,6 @@ func (s *StateStorage) Reset() {
 	s.store.Set(core.IosErrorKey, 0)
 	s.store.Set(core.AndroidSuccessKey, 0)
 	s.store.Set(core.AndroidErrorKey, 0)
-	s.store.Set(core.HuaweiSuccessKey, 0)
-	s.store.Set(core.HuaweiErrorKey, 0)
 }
 
 // AddTotalCount record push notification count.
@@ -56,16 +54,6 @@ func (s *StateStorage) AddAndroidSuccess(count int64) {
 // AddAndroidError record counts of error Android push notification.
 func (s *StateStorage) AddAndroidError(count int64) {
 	s.store.Add(core.AndroidErrorKey, count)
-}
-
-// AddHuaweiSuccess record counts of success Huawei push notification.
-func (s *StateStorage) AddHuaweiSuccess(count int64) {
-	s.store.Add(core.HuaweiSuccessKey, count)
-}
-
-// AddHuaweiError record counts of error Huawei push notification.
-func (s *StateStorage) AddHuaweiError(count int64) {
-	s.store.Add(core.HuaweiErrorKey, count)
 }
 
 // GetTotalCount show counts of all notification.

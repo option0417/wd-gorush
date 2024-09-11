@@ -19,15 +19,15 @@ func TestBadgerEngine(t *testing.T) {
 	err := badger.Init()
 	assert.Nil(t, err)
 
-	badger.Add(core.HuaweiSuccessKey, 10)
-	val = badger.Get(core.HuaweiSuccessKey)
+	badger.Add(core.TotalCountKey, 10)
+	val = badger.Get(core.TotalCountKey)
 	assert.Equal(t, int64(10), val)
-	badger.Add(core.HuaweiSuccessKey, 10)
-	val = badger.Get(core.HuaweiSuccessKey)
+	badger.Add(core.TotalCountKey, 10)
+	val = badger.Get(core.TotalCountKey)
 	assert.Equal(t, int64(20), val)
 
-	badger.Set(core.HuaweiSuccessKey, 0)
-	val = badger.Get(core.HuaweiSuccessKey)
+	badger.Set(core.TotalCountKey, 0)
+	val = badger.Get(core.TotalCountKey)
 	assert.Equal(t, int64(0), val)
 
 	// test concurrency issues
@@ -35,12 +35,12 @@ func TestBadgerEngine(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
 		go func() {
-			badger.Add(core.HuaweiSuccessKey, 1)
+			badger.Add(core.TotalCountKey, 1)
 			wg.Done()
 		}()
 	}
 	wg.Wait()
-	val = badger.Get(core.HuaweiSuccessKey)
+	val = badger.Get(core.TotalCountKey)
 	assert.Equal(t, int64(10), val)
 
 	assert.NoError(t, badger.Close())

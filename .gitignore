@@ -39,3 +39,7 @@ node_modules
 config.yml
 dist/
 .idea
+
+# For push
+projectR_apns.p12
+fcm.json
